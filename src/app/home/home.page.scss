@@ -25,3 +25,22 @@
 #container a {
   text-decoration: none;
 }
+
+.heightMax {
+  height: 100%
+}
+
+.cardHours {
+  height: 80%
+}
+
+.divHours {
+  height: 100%;
+  width: 100%;
+  display: table;
+}
+
+.labelHours {
+  display: table-cell; 
+  vertical-align: middle
+}

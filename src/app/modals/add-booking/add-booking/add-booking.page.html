@@ -1,0 +1,43 @@
+<ion-content>
+  <ion-grid style="height: 100%;">
+    <ion-row style="align-items: center; height: 100%;" class="ion-text-center">
+      <ion-col>
+        <ion-card>
+          <ion-grid style="height: 100%;">
+            <ion-row>
+              <ion-col>
+                Prenotazione {{selectedRoom.roomName}}
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col *ngIf="dateString">
+                per le {{selectedHour.name}} di {{dateString}}
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-item>
+                  <ion-label position="floating">Nome del Fisioterapista</ion-label>
+                  <ion-input [(ngModel)]="physioName"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-item>
+                  <ion-label position="floating">Nome del Paziente</ion-label>
+                  <ion-input [(ngModel)]="patientName"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-button (click)="addBooking()">Prenota!</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
