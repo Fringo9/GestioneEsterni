@@ -222,7 +222,6 @@ export class HomeService {
         .toPromise()
         .then(
           res => {
-            console.log(res);
             resolve(res as Appointment[]);
           },
           () => {

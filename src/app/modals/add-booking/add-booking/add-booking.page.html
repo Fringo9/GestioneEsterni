@@ -3,36 +3,84 @@
     <ion-row style="align-items: center; height: 100%;" class="ion-text-center">
       <ion-col>
         <ion-card>
-          <ion-grid style="height: 100%;">
+          <ion-grid style="height: 100%; padding: 0%;">
             <ion-row>
-              <ion-col>
-                Prenotazione {{selectedRoom.roomName}}
+              <ion-col class="left-col">
+                <ion-grid style="padding: 0%;">
+                  <ion-row>
+                    <ion-col style="padding: 0%; text-align: end;">
+                      <ion-button style="margin: 0%;" size="small" fill="clear" (click)="onModalDismiss()">
+                        <ion-icon></ion-icon>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <h3 class="title">Prenotazione {{selectedRoom.roomName}}</h3>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <h3 class="title">per le {{selectedHour.name}}</h3>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="dateString.length === 1">
+                    <ion-col>
+                      <h3 class="title">del giorno</h3>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="dateString.length === 1">
+                    <ion-col>
+                      <ion-card>
+                        <h3 class="title">{{dateString[0]}}</h3>
+                      </ion-card>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="dateString.length > 1">
+                    <ion-col>
+                      <h3 class="title">dei giorni</h3>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="dateString.length > 1">
+                    <ion-col *ngFor="let date of dateString" size="5">
+                      <ion-card>
+                        <h3 class="title-card">{{date}}</h3>
+                      </ion-card>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
               </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col *ngIf="dateString">
-                per le {{selectedHour.name}} di {{dateString}}
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <ion-item>
-                  <ion-label position="floating">Nome del Fisioterapista</ion-label>
-                  <ion-input [(ngModel)]="physioName"></ion-input>
-                </ion-item>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <ion-item>
-                  <ion-label position="floating">Nome del Paziente</ion-label>
-                  <ion-input [(ngModel)]="patientName"></ion-input>
-                </ion-item>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <ion-button (click)="addBooking()">Prenota!</ion-button>
+              <ion-col style="padding: 0%;">
+                <ion-grid style="padding: 0%;">
+                  <ion-row>
+                    <ion-col style="padding: 0%; text-align: end;">
+                      <ion-button style="margin: 0%;" size="small" fill="clear" (click)="onModalDismiss()">
+                        <ion-icon name="close-circle-outline"></ion-icon>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label position="floating">Nome del Fisioterapista</ion-label>
+                        <ion-input [(ngModel)]="physioName"></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label position="floating">Nome del Paziente</ion-label>
+                        <ion-input [(ngModel)]="patientName"></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-button (click)="addBooking()">Prenota!</ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
               </ion-col>
             </ion-row>
           </ion-grid>

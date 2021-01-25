@@ -11,9 +11,9 @@ export class AddBookingPage implements OnInit {
 
   @Input() selectedRoom: Room;
   @Input() selectedHour: HourRange;
-  @Input() selectedDate: Date;
+  @Input() date: Date[];
   @Input() physioName: string;
-  dateString: string;
+  dateString: string[] = [];
   patientName: string;
 
   constructor(
@@ -22,19 +22,26 @@ export class AddBookingPage implements OnInit {
     public toastController: ToastController) { }
 
   ngOnInit() {
-    this.dateString = new Date(this.selectedDate).toLocaleString('it-IT', { 'weekday': 'long', 'month': 'long', 'day': '2-digit' });
+    this.date.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+    for (let i = 0; i < this.date.length; i++) {
+      this.dateString.push(new Date(this.date[i]).toLocaleString('it-IT', { 'weekday': 'long', 'month': 'long', 'day': '2-digit' }));
+    }
   }
 
   addBooking() {
-    const startDate = this.makeGmtDate(this.selectedDate, this.selectedHour.startTime);
-    const endDate = this.makeGmtDate(this.selectedDate, this.selectedHour.endTime);
+    const startDates = [];
+    const endDates = [];
+    for (let i = 0; i < this.date.length; i++) {
+      startDates.push(this.makeGmtDate(this.date[i], this.selectedHour.startTime));
+      endDates.push(this.makeGmtDate(this.date[i], this.selectedHour.endTime));
+    }
 
     const bookingBody = {
       roomId: this.selectedRoom.roomId,
       patientName: this.patientName,
       physioName: this.physioName,
-      startDate: startDate,
-      endDate: endDate
+      startDatesArray: startDates,
+      endDatesArray: endDates
     }
 
     this.homeService.addBooking(bookingBody).then(() => {
@@ -47,8 +54,11 @@ export class AddBookingPage implements OnInit {
   }
 
   makeGmtDate(date: Date, time: string) {
-    const gmtDate = new Date(date.toLocaleDateString('en-US') + ' ' + time);
+    console.log(date);
+    const gmtDate = new Date(new Date(date).toLocaleDateString('en-US') + ' ' + time);
     gmtDate.setTime(gmtDate.getTime() + 60 * 60 * 1000);
+    console.log('gmtDate')
+    console.log(gmtDate)
     return gmtDate
   }
 

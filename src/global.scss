@@ -28,12 +28,12 @@
 
 .modal-style {
     --background: transparent !important;
-    --height: 50%;
-    --width: 50%;
+    --box-shadow: 0% !important;
+    --overflow: hidden;
   }
 
 .custom-popover {
-  --overflow: hidden
+  --overflow: hidden;
   --webkit-scrollbar {
     display: none;
   }
