@@ -25,6 +25,8 @@
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^5.0.0",
     "angular-cli-ghpages": "^1.0.0-rc.1",
+    "date-fns": "^2.16.1",
+    "datejs": "^1.0.0-rc3",
     "ion2-calendar": "^3.5.0",
     "moment": "^2.29.1",
     "rxjs": "~6.5.5",

@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
 import { HomeService, HourRange, Room } from 'src/app/home.service';
+import { format } from 'date-fns'
+import { it } from 'date-fns/locale'
 
 @Component({
   selector: 'app-add-booking',
@@ -11,7 +13,7 @@ export class AddBookingPage implements OnInit {
 
   @Input() selectedRoom: Room;
   @Input() selectedHour: HourRange;
-  @Input() date: Date[];
+  @Input() date: string[];
   @Input() physioName: string;
   dateString: string[] = [];
   patientName: string;
@@ -24,41 +26,46 @@ export class AddBookingPage implements OnInit {
   ngOnInit() {
     this.date.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
     for (let i = 0; i < this.date.length; i++) {
-      this.dateString.push(new Date(this.date[i]).toLocaleString('it-IT', { 'weekday': 'long', 'month': 'long', 'day': '2-digit' }));
+      this.dateString.push(format(new Date(this.date[i]), 'EEEE dd MMMM', { locale: it }));
     }
   }
 
   addBooking() {
-    const startDates = [];
-    const endDates = [];
-    for (let i = 0; i < this.date.length; i++) {
-      startDates.push(this.makeGmtDate(this.date[i], this.selectedHour.startTime));
-      endDates.push(this.makeGmtDate(this.date[i], this.selectedHour.endTime));
-    }
+    if (this.physioName && this.patientName) {
+      const startDates = [];
+      const endDates = [];
+      for (let i = 0; i < this.date.length; i++) {
+        startDates.push(this.makeGmtDate(new Date(this.date[i]), this.selectedHour.startTime));
+        endDates.push(this.makeGmtDate(new Date(this.date[i]), this.selectedHour.endTime));
+      }
 
-    const bookingBody = {
-      roomId: this.selectedRoom.roomId,
-      patientName: this.patientName,
-      physioName: this.physioName,
-      startDatesArray: startDates,
-      endDatesArray: endDates
-    }
+      const bookingBody = {
+        roomId: this.selectedRoom.roomId,
+        patientName: this.patientName,
+        physioName: this.physioName,
+        startDatesArray: startDates,
+        endDatesArray: endDates
+      }
 
-    this.homeService.addBooking(bookingBody).then(() => {
-      this.presentToast('Appuntamento aggiunto')
-      this.onModalDismiss();
-    })
-      .catch(() => {
-        this.presentToast('Errore aggiunta appuntamento')
+      this.homeService.addBooking(bookingBody).then(() => {
+        this.presentToast('Appuntamento aggiunto')
+        this.onModalDismiss();
       })
+        .catch(() => {
+          this.presentToast('Errore aggiunta appuntamento')
+        })
+    } else if (!this.physioName && this.patientName) {
+      this.presentToast('Nome Fisioterapista mancante')
+    } else if (!this.patientName && this.physioName) {
+      this.presentToast('Nome Paziente mancante')
+    } else if (!this.patientName && !this.physioName) {
+      this.presentToast('Nome Fisioterapista e nome Paziente mancanti')
+    }
   }
 
   makeGmtDate(date: Date, time: string) {
-    console.log(date);
     const gmtDate = new Date(new Date(date).toLocaleDateString('en-US') + ' ' + time);
     gmtDate.setTime(gmtDate.getTime() + 60 * 60 * 1000);
-    console.log('gmtDate')
-    console.log(gmtDate)
     return gmtDate
   }
 

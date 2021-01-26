@@ -95,7 +95,7 @@ export class HomePage {
 
     // Popolo array date con date selezionate convertendole
     for (let i = 0; i < event.length; i++) {
-      this.date.push(new Date(event[i]).toLocaleDateString('en-US'));
+      this.date.push(event[i].replace(/-/g, "/"));
     }
 
     // Resetto la lista degli orari disponibili
@@ -120,9 +120,13 @@ export class HomePage {
         }
       }
 
+      //Elimino gli eventuali duplicati ed ordino l'array finale
+      const uniqueIndexes = indexToRemove.filter((elem, index, self) => index === self.indexOf(elem));
+      uniqueIndexes.sort((a, b) => a - b);
+
       // Elimino i range orari dalla lista
-      for (var i = indexToRemove.length - 1; i >= 0; i--) {
-        this.hourRange.splice(indexToRemove[i], 1);
+      for (var i = uniqueIndexes.length - 1; i >= 0; i--) {
+        this.hourRange.splice(uniqueIndexes[i], 1);
         this.hourRange = [...this.hourRange];
       }
     }
@@ -131,18 +135,6 @@ export class HomePage {
   changeToggle(event) {
     this.showQuarter = event.detail.checked;
   }
-
-  /* segmentChanged($event) {
-    for (let i = 0; i < this.rooms.length; i++) {
-      if (this.rooms[i].roomId === Number($event.detail.value)) {
-        this.selectedRoom = this.rooms[i]
-      }
-    }
-    this.hourRange = [...this.homeService.getHourRange()];
-    if (this.date) {
-      this.getHoursFree(this.date);
-    }
-  } */
 
   onClick(room: Room, i: number) {
     if (i === this.clickedIndex) {
