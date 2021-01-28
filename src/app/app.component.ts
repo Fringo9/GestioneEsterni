@@ -18,6 +18,19 @@ export class AppComponent {
     this.initializeApp();
   }
 
+  menuItems = [
+    {
+      title: "Aggiungi Prenotazione",
+      url: "home",
+      icon: "add-circle-outline"
+    },
+    {
+      title: "Le mie Prenotazioni",
+      url: "appointments",
+      icon: "calendar-outline"
+    }
+  ];
+
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();

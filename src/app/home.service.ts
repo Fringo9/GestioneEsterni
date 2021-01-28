@@ -231,6 +231,23 @@ export class HomeService {
     );
   }
 
+  async removeAppointment(appointmentId: number): Promise<object> {
+    console.log(appointmentId)
+    return this.http.post(this.costantsService.getApiRoute('removeAppointment'), { appointmentId })
+      .toPromise()
+  }
+
+  makeDateRightFormat(date: string) {
+    const stringSplitted = date.split('-');
+    const month = stringSplitted[0];
+    let day = stringSplitted[1];
+    if (day.charAt(0) === '0') {
+      day = day.charAt(1);
+    }
+    const year = stringSplitted[2];
+    return month + '/' + day + '/' + year;
+  }
+
 }
 
 // Rappresenta un range orario

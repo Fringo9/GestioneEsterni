@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { CalendarComponentOptions } from 'ion2-calendar';
+import { MenuController, ModalController, ToastController } from '@ionic/angular';
 import { Appointment, HomeService, HourRange, Physio, Room } from '../home.service';
-import { AddBookingPage } from '../modals/add-booking/add-booking/add-booking.page';
 import * as moment from 'moment'
+import { AddBookingModalPage } from '../add-booking-modal/add-booking-modal.page';
+import { format } from 'date-fns'
+import { it } from 'date-fns/locale'
 
 @Component({
   selector: 'app-home',
@@ -12,55 +13,46 @@ import * as moment from 'moment'
 })
 export class HomePage {
 
-  buttonClicked: boolean = false;
-  clickedIndex: number;
-  date: string[] = [];
-  type: 'string';
   rooms: Room[];
-  selectedRoom: Room;
   physio: Physio[];
   selectedPhysio: Physio;
-  hourRange: HourRange[];
-  showQuarter: boolean = false;
   appointments: Appointment[];
 
-  optionsRange: CalendarComponentOptions = {
-    monthFormat: 'MMM YYYY',
-    monthPickerFormat: ['GEN', 'FEB', 'MAR', 'APR', 'MAG', 'GIU', 'LUG', 'AGO', 'SET', 'OTT', 'NOV', 'DIC'],
-    weekdays: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'],
-    weekStart: 1,
-    pickMode: 'multi'
-  };
-
-  constructor(private homeService: HomeService, private modalController: ModalController) {
+  constructor(
+    public homeService: HomeService,
+    private modalController: ModalController,
+    public toastController: ToastController) {
     moment.locale('it-IT')
   }
 
-  // Modale di prenotazione
-  async presentAddBookingModal(hour: HourRange) {
-    if (this.selectedRoom && this.date) {
-      const modal = await this.modalController.create({
-        component: AddBookingPage,
-        cssClass: 'modal-style',
-        componentProps: {
-          'selectedRoom': this.selectedRoom,
-          'selectedHour': hour,
-          'date': this.date,
-          'physioName': this.selectedPhysio.name
-        }
+  // Modale di prenotazione Nuova
+  async presentAddBookingModal() {
+    const modal = await this.modalController.create({
+      component: AddBookingModalPage,
+      cssClass: 'add-booking',
+      componentProps: {
+        'appointments': this.appointments,
+        'physio': this.physio,
+        'selectedPhysio': this.selectedPhysio,
+        'rooms': this.rooms
+      }
+    });
+
+    modal.onDidDismiss()
+      .then(() => {
+        console.log('Modale dismessa')
+        this.getAppointments();
       });
 
-      modal.onDidDismiss()
-        .then(() => {
-          console.log('Modale dismessa')
-          this.getAppointments();
-        });
+    return await modal.present();
+  }
 
-      return await modal.present();
-
-    } else {
-      console.log('Non hai scelto tutto')
-    }
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
+    });
+    toast.present();
   }
 
   ngOnInit() {
@@ -73,10 +65,11 @@ export class HomePage {
   getAppointments() {
     this.homeService.getAppointments().then(res => {
       this.appointments = res;
+      this.appointments.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
       console.log(this.appointments);
-      if (this.date.length > 0) {
+      /* if (this.date.length > 0) {
         this.getHoursFree(this.date);
-      }
+      } */
     })
   }
 
@@ -89,8 +82,92 @@ export class HomePage {
     })
   }
 
+  removeAppointment(appointmentId: number) {
+    this.homeService.removeAppointment(appointmentId).then(() => {
+      this.getAppointments();
+      this.presentToast('Appuntamento cancellato');
+    }).catch(() => {
+      this.presentToast("Errore nella cancellazione dell'appuntamento");
+    })
+  }
+
+  getRoomFromId(roomId: number) {
+    for (let i = 0; i < this.rooms.length; i++) {
+      if (roomId === this.rooms[i].roomId) {
+        return this.rooms[i].roomName;
+      }
+    }
+  }
+
+  getDayRightFormat(day: string, hour: string, type?: string) {
+    if (type === 'weekDay') {
+      return (format(new Date(day + ' ' + hour), 'EEEE', { locale: it }));
+    } else {
+      return (format(new Date(day + ' ' + hour), 'd MMMM', { locale: it }));
+    }
+  }
+
+  getHourRightFormat(day: string, hour: string) {
+    return (format(new Date(day + ' ' + hour), 'k:mm'));
+  }
+
+  customPopoverOptions: any = {
+    cssClass: 'custom-popover'
+  };
+
+
+
+
+
+
+
+  /*  Vecchi metodi ora nella modale
+
+  /* buttonClicked: boolean = false;
+  clickedIndex: number; */
+  // date: string[] = [];
+  // type: 'string';
+  /* selectedRoom: Room; */
+  /* hourRange: HourRange[]; */
+  // showQuarter: boolean = false;
+
+  /* optionsRange: CalendarComponentOptions = {
+   monthFormat: 'MMM YYYY',
+   monthPickerFormat: ['GEN', 'FEB', 'MAR', 'APR', 'MAG', 'GIU', 'LUG', 'AGO', 'SET', 'OTT', 'NOV', 'DIC'],
+   weekdays: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'],
+   weekStart: 1,
+   pickMode: 'multi'
+ }; */
+
+  /* // Modale di prenotazione vecchia
+async presentAddBookingModalV(hour: HourRange) {
+  if (this.selectedRoom && this.date) {
+    const modal = await this.modalController.create({
+      component: AddBookingPage,
+      cssClass: 'modal-style',
+      componentProps: {
+        'selectedRoom': this.selectedRoom,
+        'selectedHour': hour,
+        'date': this.date,
+        'physioName': this.selectedPhysio.name
+      }
+    });
+
+    modal.onDidDismiss()
+      .then(() => {
+        console.log('Modale dismessa')
+        this.getAppointments();
+      });
+
+    return await modal.present();
+
+  } else {
+    console.log('Non hai scelto tutto')
+  }
+} */
+
   // Scatta alla selezione di una data
-  daySelected(event) {
+  /* daySelected(event) {
     this.date = [];
 
     // Popolo array date con date selezionate convertendole
@@ -101,9 +178,9 @@ export class HomePage {
     // Resetto la lista degli orari disponibili
     this.hourRange = [...this.homeService.getHourRange()];
     this.getHoursFree(this.date);
-  }
+  } */
 
-  // Controllo se date selezionate corrispondono ad eventuali appuntamenti
+  /* // Controllo se date selezionate corrispondono ad eventuali appuntamenti
   getHoursFree(selectedDate: string[]) {
     if (selectedDate && this.selectedRoom) {
       const indexToRemove = [];
@@ -130,13 +207,13 @@ export class HomePage {
         this.hourRange = [...this.hourRange];
       }
     }
-  }
+  } */
 
-  changeToggle(event) {
+  /* changeToggle(event) {
     this.showQuarter = event.detail.checked;
-  }
+  } */
 
-  onClick(room: Room, i: number) {
+  /* onClick(room: Room, i: number) {
     if (i === this.clickedIndex) {
       this.buttonClicked = !this.buttonClicked;
       this.clickedIndex = undefined;
@@ -157,10 +234,6 @@ export class HomePage {
         this.getHoursFree(this.date);
       }
     }
-  }
-
-  customPopoverOptions: any = {
-    cssClass: 'custom-popover'
-  };
+  } */
 
 }

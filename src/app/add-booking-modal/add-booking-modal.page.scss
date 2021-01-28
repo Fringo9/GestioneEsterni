@@ -1,0 +1,105 @@
+#container {
+    text-align: center;
+  
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  #container strong {
+    font-size: 20px;
+    line-height: 26px;
+  }
+  
+  #container p {
+    font-size: 16px;
+    line-height: 22px;
+  
+    color: #8c8c8c;
+  
+    margin: 0;
+  }
+  
+  #container a {
+    text-decoration: none;
+  }
+  
+  ion-toggle {
+    --background-checked: #8CB5E6;
+    --handle-background-checked: #70A3DF;
+  }
+  
+  .heightMax {
+    height: 100%;
+    padding: 0%;
+  }
+  
+  .cardHours {
+    height: 80%;
+    width: 100%;
+    padding-left: 2%;
+    padding-right: 2%;
+  }
+
+  .hour-clicked {
+    height: 80%;
+    width: 100%;
+    padding-left: 2%;
+    padding-right: 2%;
+    background-color: #000000;
+    color: #ffffff;
+  }
+  
+  .divHours {
+    height: 100%;
+    width: 100%;
+    display: table;
+  }
+  
+  .labelHours {
+    display: table-cell; 
+    vertical-align: middle;
+  }
+  
+  .right-col {
+    background: linear-gradient(360deg, hsla(213, 64%, 59%, 1) 27%, hsla(203, 69%, 59%, 1) 95%);
+    text-align: center;
+  }
+  
+  .chip-custom {
+    height: 60px;
+    width: 200px;
+    margin-top: 18px;
+  }
+  
+  .avatar-chip {
+    width: 50px;
+      height: 50px;
+  }
+  
+  .chip-select {
+    font-size: 20px;
+  }
+  
+  .room-button {
+    font-size: 15px; 
+    text-transform:none!important;
+  }
+  
+  .room-button-clicked {
+    font-size: 15px; 
+    text-transform: none!important;
+    background-color: #5390d9;
+    color: white;
+    border-radius: 8px;
+  }
+
+  ion-item {
+    --background: transparent;
+  }
+
+  ion-label.ion-item-has-focus {
+    --color: black;
+  }

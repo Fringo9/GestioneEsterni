@@ -4,8 +4,8 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 import { CalendarModule } from 'ion2-calendar';
-import { FilterQuarterPipe } from './filter-quarter.pipe';
 import { HomePageRoutingModule } from './home-routing.module';
+import { PhysioFilterPipe } from '../physio-filter.pipe';
 
 
 @NgModule({
@@ -16,7 +16,7 @@ import { HomePageRoutingModule } from './home-routing.module';
     HomePageRoutingModule,
     CalendarModule
   ],
-  declarations: [HomePage, FilterQuarterPipe],
+  declarations: [HomePage, PhysioFilterPipe],
   providers: [{ provide: LOCALE_ID, useValue: 'it-IT' }]
 })
 export class HomePageModule { }

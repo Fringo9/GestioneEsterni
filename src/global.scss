@@ -32,6 +32,12 @@
     --overflow: hidden;
   }
 
+.add-booking .modal-wrapper {
+  height: 100%;
+  width: 100%;
+  border-radius: 0%;
+  }
+
 .custom-popover {
   --overflow: hidden;
   --webkit-scrollbar {

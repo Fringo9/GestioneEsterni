@@ -1,0 +1,104 @@
+<ion-content>
+  <ion-grid class="heightMax">
+    <ion-row class="heightMax">
+      <ion-col class="ion-text-center">
+        <ion-buttons>
+          <ion-button style="margin: 0%;" size="large" fill="clear" (click)="onModalDismiss()">
+            <ion-icon name="close-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <h2>Scegli le date da prenotare</h2>
+        <ion-card>
+          <div class="ion-padding">
+            <ion-calendar [options]="optionsRange" (change)="daySelected($event)" type="string" format="M-DD-YYYY">
+            </ion-calendar>
+          </div>
+        </ion-card>
+        <h2>Scegli il lettino</h2>
+        <ion-grid>
+          <ion-row>
+            <ion-col *ngFor="let room of rooms; let i = index">
+              <ion-button (click)="onClick(room, i)" size="small" fill="clear"
+                [ngClass]="buttonClicked && clickedIndex === i ? 'room-button-clicked': 'room-button'"
+                class="room-button">
+                {{room.roomName}}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+      <ion-col class="right-col">
+        <ion-chip *ngIf="physio" class="chip-custom">
+          <ion-avatar class="avatar-chip">
+            <img [src]="selectedPhysio.image">
+          </ion-avatar>
+          <ion-select [(ngModel)]="selectedPhysio" [value]="selectedPhysio" [interfaceOptions]="customPopoverOptions"
+            interface="popover" class="chip-select">
+            <ion-select-option *ngFor="let item of physio" [value]="item">{{item.name}}
+            </ion-select-option>
+          </ion-select>
+        </ion-chip>
+        <h2 style="margin-top: 5px; margin-bottom: 5px;">Scegli l'orario</h2>
+        <ion-grid *ngIf="hourRange && selectedRoom && date.length > 0" style="padding: 0%;">
+          <ion-row>
+            <ion-col class="ion-text-center" style="padding: 0%;">
+              <ion-grid style="height: 100%; padding: 0%;">
+                <ion-row style="display: flex; align-items: center;">
+                  <ion-col size="7" style="text-align: end; padding: 0%;">
+                    Mostra quarti d'ora
+                  </ion-col>
+                  <ion-col size="5" style="text-align: start; padding: 0%;">
+                    <ion-toggle (ionChange)="changeToggle($event)"></ion-toggle>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="ion-text-center" *ngIf="showQuarter === true && hourRange">
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="3" *ngFor="let hour of hourRange; let k = index">
+                    <ion-card class="cardHours" (click)="selectHour(hour, k)"
+                      [ngClass]="buttonClickedHour && clickedIndexHour === k ? 'hour-clicked': 'cardHours'">
+                      <div class="divHours">
+                        <ion-label class="labelHours">
+                          {{hour.name}}</ion-label>
+                      </div>
+                    </ion-card>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+            <ion-col class="ion-text-center" *ngIf="showQuarter === false && hourRange">
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="3" *ngFor="let hour of hourRange | filterQuarter; let j = index">
+                    <ion-card class="cardHours" (click)="selectHour(hour, j)"
+                      [ngClass]="buttonClickedHour && clickedIndexHour === j ? 'hour-clicked': 'cardHours'">
+                      <div class="divHours">
+                        <ion-label class="labelHours">
+                          {{hour.name}}</ion-label>
+                      </div>
+                    </ion-card>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-item class="item-content">
+                <ion-label position="floating" style="font-size: 24px;">Nome del Paziente</ion-label>
+                <ion-input [(ngModel)]="patientName" required="true"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-button (click)="addBooking()">Prenota!</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

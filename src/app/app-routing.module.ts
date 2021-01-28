@@ -8,8 +8,12 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
   {
-    path: 'add-booking',
-    loadChildren: () => import('./modals/add-booking/add-booking/add-booking.module').then(m => m.AddBookingPageModule)
+    path: 'appointments',
+    loadChildren: () => import('./appointments/appointments.module').then(m => m.AppointmentsPageModule)
+  },
+  {
+    path: 'add-booking-modal',
+    loadChildren: () => import('./add-booking-modal/add-booking-modal.module').then(m => m.AddBookingModalPageModule)
   }
 ];
 

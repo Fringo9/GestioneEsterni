@@ -1,7 +1,89 @@
 <ion-content>
+  <ion-grid style="padding: 0%;">
+    <ion-row>
+      <ion-col class="ion-text-center" style="padding: 0%;">
+        <ion-chip *ngIf="physio" class="chip-custom">
+          <ion-avatar class="avatar-chip">
+            <img [src]="selectedPhysio.image">
+          </ion-avatar>
+          <ion-select [(ngModel)]="selectedPhysio" [value]="selectedPhysio" [interfaceOptions]="customPopoverOptions"
+            interface="popover" class="chip-select">
+            <ion-select-option *ngFor="let item of physio" [value]="item">{{item.name}}
+            </ion-select-option>
+          </ion-select>
+        </ion-chip>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-card class="card" *ngIf="appointments && selectedPhysio">
+    <ion-grid style="padding: 0%;">
+      <ion-row style="background-color: #f6f5f5; padding-bottom: 1%; margin-bottom: 1%;">
+        <ion-col style="padding-top: 1.5%;" size="3">
+          Data
+        </ion-col>
+        <ion-col style="padding-top: 1.5%;" size="3">
+          Ora
+        </ion-col>
+        <ion-col style="padding-top: 1.5%;" size="3">
+          Lettino
+        </ion-col>
+        <ion-col style="padding-top: 1.5%;" size="2">
+          Nome del paziente
+        </ion-col>
+        <ion-col style="padding-top: 1.5%;" size="1">
+        </ion-col>
+      </ion-row>
+      <ion-row *ngFor="let appointment of appointments | physioFilter: selectedPhysio" style="align-items: center;">
+        <ion-col size="3">
+          <ion-label>{{getDayRightFormat(appointment.day, appointment.startTime, 'weekDay')}}
+            <br>
+            {{getDayRightFormat(appointment.day, appointment.startTime)}}
+          </ion-label>
+        </ion-col>
+        <ion-col size="3">
+          <ion-label>{{getHourRightFormat(appointment.day, appointment.startTime)}}
+            <br>
+            {{getHourRightFormat(appointment.day, appointment.endTime)}}
+          </ion-label>
+        </ion-col>
+        <ion-col size="3">
+          <ion-label>{{getRoomFromId(appointment.roomId)}}</ion-label>
+        </ion-col>
+        <ion-col size="2">
+          <ion-label>{{appointment.patientName}}</ion-label>
+        </ion-col>
+        <ion-col size="1">
+          <ion-button fill="clear" color="danger" (click)="removeAppointment(appointment.appointmentId)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <hr class="hr">
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-chip (click)="presentAddBookingModal()">
+          <ion-label class="label-button">Nuovo Appuntamento</ion-label>
+        </ion-chip>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+
+
+
+
+
+<!-- Codice Vecchio
   <ion-grid class="heightMax">
     <ion-row class="heightMax">
       <ion-col class="ion-text-center">
+        <ion-buttons>
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
         <h2>Scegli le date da prenotare</h2>
         <ion-card>
           <div class="ion-padding">
@@ -54,7 +136,7 @@
               <ion-grid>
                 <ion-row>
                   <ion-col size="3" *ngFor="let hour of hourRange">
-                    <ion-card class="cardHours" (click)="presentAddBookingModal(hour)">
+                    <ion-card class="cardHours" (click)="presentAddBookingModalV(hour)">
                       <div class="divHours">
                         <ion-label class="labelHours">
                           {{hour.name}}</ion-label>
@@ -68,7 +150,7 @@
               <ion-grid>
                 <ion-row>
                   <ion-col size="3" *ngFor="let hour of hourRange | filterQuarter">
-                    <ion-card class="cardHours" (click)="presentAddBookingModal(hour)">
+                    <ion-card class="cardHours" (click)="presentAddBookingModalV(hour)">
                       <div class="divHours">
                         <ion-label class="labelHours">
                           {{hour.name}}</ion-label>
@@ -82,5 +164,4 @@
         </ion-grid>
       </ion-col>
     </ion-row>
-  </ion-grid>
-</ion-content>
+  </ion-grid> -->

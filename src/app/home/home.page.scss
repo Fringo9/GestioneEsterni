@@ -26,37 +26,36 @@
   text-decoration: none;
 }
 
+ion-content{
+  --background: linear-gradient(360deg, hsla(213, 64%, 59%, 1) 27%, hsla(203, 69%, 59%, 1) 95%);
+}
+
 ion-toggle {
   --background-checked: #8CB5E6;
   --handle-background-checked: #70A3DF;
 }
 
-.heightMax {
+ion-col {
+  text-align: center;
   height: 100%;
-  padding: 0%;
-}
-
-.cardHours {
-  height: 80%;
-  width: 100%;
-  padding-left: 2%;
-  padding-right: 2%;
-}
-
-.divHours {
-  height: 100%;
-  width: 100%;
-  display: table;
-}
-
-.labelHours {
-  display: table-cell; 
+  display: block;
   vertical-align: middle;
 }
 
-.right-col {
-  background: linear-gradient(360deg, hsla(213, 64%, 59%, 1) 27%, hsla(203, 69%, 59%, 1) 95%);
-  text-align: center;
+.hr {
+  border-top: 3px solid #f6f5f5;
+  width: 100%;
+}
+
+.card {
+  margin-left: 5%;
+  margin-right: 5%;
+  border-radius: 10px;
+}
+
+.label-button {
+  font-weight: 100;
+  font-size: 20px;
 }
 
 .chip-custom {
@@ -72,17 +71,4 @@ ion-toggle {
 
 .chip-select {
   font-size: 20px;
-}
-
-.room-button {
-  font-size: 15px; 
-  text-transform:none!important;
-}
-
-.room-button-clicked {
-  font-size: 15px; 
-  text-transform: none!important;
-  background-color: #5390d9;
-  color: white;
-  border-radius: 8px;
 }
