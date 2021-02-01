@@ -51,6 +51,18 @@
                     <ion-toggle (ionChange)="changeToggle($event)"></ion-toggle>
                   </ion-col>
                 </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-segment (ionChange)="segmentHourChanged($event)">
+                      <ion-segment-button value="mattina">
+                        <ion-label>Mattina</ion-label>
+                      </ion-segment-button>
+                      <ion-segment-button value="pomeriggio">
+                        <ion-label>Pomeriggio</ion-label>
+                      </ion-segment-button>
+                    </ion-segment>
+                  </ion-col>
+                </ion-row>
               </ion-grid>
             </ion-col>
           </ion-row>
@@ -58,7 +70,8 @@
             <ion-col class="ion-text-center" *ngIf="showQuarter === true && hourRange">
               <ion-grid>
                 <ion-row>
-                  <ion-col size="3" *ngFor="let hour of hourRange; let k = index">
+                  <ion-col size="3"
+                    *ngFor="let hour of hourRange | filterQuarter: {quarterFilter: showQuarter, hourFilter: hourFilter}; let k = index">
                     <ion-card class="cardHours" (click)="selectHour(hour, k)"
                       [ngClass]="buttonClickedHour && clickedIndexHour === k ? 'hour-clicked': 'cardHours'">
                       <div class="divHours">
@@ -73,7 +86,8 @@
             <ion-col class="ion-text-center" *ngIf="showQuarter === false && hourRange">
               <ion-grid>
                 <ion-row>
-                  <ion-col size="3" *ngFor="let hour of hourRange | filterQuarter; let j = index">
+                  <ion-col size="3"
+                    *ngFor="let hour of hourRange | filterQuarter: {quarterFilter: showQuarter, hourFilter: hourFilter}; let j = index">
                     <ion-card class="cardHours" (click)="selectHour(hour, j)"
                       [ngClass]="buttonClickedHour && clickedIndexHour === j ? 'hour-clicked': 'cardHours'">
                       <div class="divHours">

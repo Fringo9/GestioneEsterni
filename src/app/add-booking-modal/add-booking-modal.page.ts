@@ -19,6 +19,7 @@ export class AddBookingModalPage implements OnInit {
   hourRange: HourRange[];
   selectedRoom: Room;
   showQuarter: boolean = false;
+  hourFilter: string;
   buttonClicked: boolean = false;
   clickedIndex: number;
   clickedIndexHour: number;
@@ -27,6 +28,7 @@ export class AddBookingModalPage implements OnInit {
   patientName: string;
   selectedHour: HourRange;
 
+  // Opzioni calendario
   optionsRange: CalendarComponentOptions = {
     monthFormat: 'MMM YYYY',
     monthPickerFormat: ['GEN', 'FEB', 'MAR', 'APR', 'MAG', 'GIU', 'LUG', 'AGO', 'SET', 'OTT', 'NOV', 'DIC'],
@@ -45,32 +47,6 @@ export class AddBookingModalPage implements OnInit {
   customPopoverOptions: any = {
     cssClass: 'custom-popover'
   };
-
-  /* async presentAddBookingModal(hour: HourRange) {
-    if (this.selectedRoom && this.date) {
-      const modal = await this.modalController.create({
-        component: AddBookingPage,
-        cssClass: 'modal-style',
-        componentProps: {
-          'selectedRoom': this.selectedRoom,
-          'selectedHour': hour,
-          'date': this.date,
-          'physioName': this.selectedPhysio.name
-        }
-      });
-
-      modal.onDidDismiss()
-        .then(() => {
-          console.log('Modale dismessa')
-          this.getAppointments();
-        });
-
-      return await modal.present();
-
-    } else {
-      console.log('Non hai scelto tutto')
-    }
-  } */
 
   async presentToast(message: string) {
     const toast = await this.toastController.create({
@@ -91,26 +67,12 @@ export class AddBookingModalPage implements OnInit {
     }
   }
 
-  // Ottengo gli appuntamenti
-  getAppointments() {
-    this.homeService.getAppointments().then(res => {
-      this.appointments = res;
-      this.appointments.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
-      console.log(this.appointments);
-      if (this.date.length > 0) {
-        this.getHoursFree(this.date);
-      }
-    })
-  }
-
   // Controllo se date selezionate corrispondono ad eventuali appuntamenti
   getHoursFree(selectedDate: string[]) {
     if (selectedDate && this.selectedRoom) {
       const indexToRemove = [];
       for (let i = 0; i < this.appointments.length; i++) {
         for (let j = 0; j < selectedDate.length; j++) {
-          console.log(this.appointments[i].day)
-          console.log(selectedDate[j])
           if (this.appointments[i].day === selectedDate[j] && this.appointments[i].roomId === this.selectedRoom.roomId) {
             // Ottengo gli indici dei range orari da eliminare
             this.hourRange.forEach(x => {
@@ -134,8 +96,9 @@ export class AddBookingModalPage implements OnInit {
     }
   }
 
+  // Aggiunta di un appuntamento
   addBooking() {
-    if (this.selectedPhysio && this.patientName) {
+    if (this.selectedPhysio && this.patientName && this.selectedHour) {
       const startDates = [];
       const endDates = [];
       for (let i = 0; i < this.date.length; i++) {
@@ -164,9 +127,12 @@ export class AddBookingModalPage implements OnInit {
       this.presentToast('Nome Paziente mancante')
     } else if (!this.patientName && !this.selectedPhysio) {
       this.presentToast('Nome Fisioterapista e nome Paziente mancanti')
+    } else if (!this.selectedHour) {
+      this.presentToast('Orario non selezionato')
     }
   }
 
+  // Rendo la data in formato GMT per il db
   makeGmtDate(date: Date, time: string) {
     const gmtDate = new Date(new Date(date).toLocaleDateString('en-US') + ' ' + time);
     gmtDate.setTime(gmtDate.getTime() + 60 * 60 * 1000);
@@ -183,13 +149,12 @@ export class AddBookingModalPage implements OnInit {
       this.date.push(dateFormatted);
     }
 
-    console.log(this.date)
-
     // Resetto la lista degli orari disponibili
     this.hourRange = [...this.homeService.getHourRange()];
     this.getHoursFree(this.date);
   }
 
+  // Selezione di un'ora. Gestisce la selezione grafica del bottone e la variabile
   selectHour(hour: HourRange, i: number) {
     if (i === this.clickedIndexHour) {
       this.buttonClickedHour = !this.buttonClickedHour;
@@ -209,10 +174,23 @@ export class AddBookingModalPage implements OnInit {
     }
   }
 
+  // Toggle di visualizzazione dei quarti d'ora
   changeToggle(event) {
     this.showQuarter = event.detail.checked;
   }
 
+  // Segmento di scelta mattina/pomeriggio
+  segmentHourChanged(event) {
+    this.hourFilter = event.detail.value;
+    if (this.selectedHour) {
+      // Se c'è un'ora selezionata la deseleziono
+      this.selectedHour = undefined;
+      this.buttonClickedHour = !this.buttonClickedHour;
+      this.clickedIndexHour = undefined;
+    }
+  }
+
+  // Gestione della scelta del lettino
   onClick(room: Room, i: number) {
     if (i === this.clickedIndex) {
       this.buttonClicked = !this.buttonClicked;
@@ -228,7 +206,6 @@ export class AddBookingModalPage implements OnInit {
       this.selectedRoom = undefined;
     } else {
       this.selectedRoom = room;
-      console.log(this.selectedRoom);
       this.hourRange = [...this.homeService.getHourRange()];
       if (this.date) {
         this.getHoursFree(this.date);
