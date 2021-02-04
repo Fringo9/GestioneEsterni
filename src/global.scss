@@ -38,6 +38,12 @@
   border-radius: 0%;
   }
 
+.custom-alert{
+  .alert-wrapper {
+  border-radius: 20px;
+  }
+}
+
 .custom-popover {
   --overflow: hidden;
   --webkit-scrollbar {

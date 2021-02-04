@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ModalController, ToastController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Appointment, HomeService, Physio, Room } from '../home.service';
 import * as moment from 'moment'
 import { AddBookingModalPage } from '../add-booking-modal/add-booking-modal.page';
@@ -23,6 +23,7 @@ export class HomePage {
     public homeService: HomeService,
     private modalController: ModalController,
     public toastController: ToastController,
+    public alertController: AlertController,
     private spinner: SpinnerService) {
     moment.locale('it-IT')
   }
@@ -42,11 +43,40 @@ export class HomePage {
 
     modal.onDidDismiss()
       .then(() => {
-        console.log('Modale dismessa')
+        console.log('Modale Prenotazione dismessa')
         this.getAppointmentsData();
       });
 
     return await modal.present();
+  }
+
+  async presentAlertAddPhysio() {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-alert',
+      header: 'Aggiungi Fisioterapista',
+      message: 'Inserisci il nome',
+      inputs: [
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: 'Nome Fisioterapista'
+        }],
+      buttons: [
+        {
+          text: 'Annulla',
+          role: 'cancel'
+        }, {
+          text: 'Salva',
+          handler: data => {
+            if (data.name) {
+              this.addPhysio(data.name);
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   // Inizializzazione Toast
@@ -105,6 +135,16 @@ export class HomePage {
       this.presentToast('Appuntamento cancellato');
     }).catch(() => {
       this.presentToast("Errore nella cancellazione dell'appuntamento");
+    })
+  }
+
+  // Aggiungo Fisioterapista
+  addPhysio(name: string) {
+    this.homeService.addPhysio(name).then(() => {
+      this.presentToast('Fisioterapista ' + name + ' aggiunto');
+      this.getAppointmentsData();
+    }).catch(() => {
+      this.presentToast("Errore nell'aggiunta del Fisioterapista");
     })
   }
 

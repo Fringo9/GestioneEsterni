@@ -403,7 +403,7 @@ export class HomeService {
     );
   }
 
-  // Registra nuova cena a DB, e aggiunge il mio gruppo in automatico
+  // Registra nuovo appuntamento a DB
   async addBooking(bookingBody): Promise<object> {
     console.log(bookingBody);
     return this.http.post(this.costantsService.getApiRoute('addBooking'), bookingBody)
@@ -428,6 +428,13 @@ export class HomeService {
 
   async removeAppointment(appointmentId: number): Promise<object> {
     return this.http.post(this.costantsService.getApiRoute('removeAppointment'), { appointmentId })
+      .toPromise()
+  }
+
+  // Registra nuovo fisio a DB
+  async addPhysio(name: string): Promise<object> {
+    console.log('Aggiungo nuovo Fisio: ' + name);
+    return this.http.post(this.costantsService.getApiRoute('addPhysio'), { name })
       .toPromise()
   }
 
