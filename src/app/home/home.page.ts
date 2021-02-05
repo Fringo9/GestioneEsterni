@@ -42,8 +42,14 @@ export class HomePage {
     });
 
     modal.onDidDismiss()
-      .then(() => {
+      .then((data) => {
         console.log('Modale Prenotazione dismessa')
+
+        // Se nella modale ho cambiato fisio, lo cambio anche qui
+        if (data.data.id !== this.selectedPhysio.id) {
+          this.selectedPhysio = data.data;
+        }
+
         this.getAppointmentsData();
       });
 
@@ -105,8 +111,10 @@ export class HomePage {
     // Ottengo lista dei Fisio
     this.homeService.getPhysio().then(res => {
       this.physio = res;
-      this.physio.sort((a, b) => a.id - b.id);
-      this.selectedPhysio = this.physio[0];
+      this.physio.sort((a, b) => a.name.localeCompare(b.name));
+      if (!this.selectedPhysio) {
+        this.selectedPhysio = this.physio[0];
+      }
 
       // Ottengo gli appuntamenti
       this.homeService.getAppointments().then(res => {
@@ -121,7 +129,7 @@ export class HomePage {
           }
         }
 
-        this.appointments.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
+        this.appointments.sort((a, b) => new Date(a.day + ' ' + a.startTime).getTime() - new Date(b.day + ' ' + b.startTime).getTime());
         this.spinner.dismiss();
         console.log(this.appointments);
       })

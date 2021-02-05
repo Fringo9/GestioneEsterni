@@ -6,8 +6,8 @@
           <ion-avatar class="avatar-chip">
             <img [src]="selectedPhysio.image">
           </ion-avatar>
-          <ion-select [(ngModel)]="selectedPhysio" [value]="selectedPhysio" [interfaceOptions]="customPopoverOptions"
-            interface="popover" class="chip-select">
+          <ion-select [(ngModel)]="selectedPhysio" [selectedText]="selectedPhysio.name" [value]="selectedPhysio"
+            [interfaceOptions]="customPopoverOptions" interface="popover" class="chip-select">
             <ion-select-option *ngFor="let item of physio" [value]="item">{{item.name}}
             </ion-select-option>
           </ion-select>

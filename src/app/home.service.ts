@@ -390,7 +390,7 @@ export class HomeService {
               if (physioArray[i].image) {
                 physioArray[i].image = 'data:image/jpeg;base64,' + physioArray[i].image
               } else {
-                physioArray[i].image = './assets/avatar.svg'
+                physioArray[i].image = './assets/avatar.png'
               }
             }
             console.log(physioArray);

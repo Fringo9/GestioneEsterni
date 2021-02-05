@@ -57,7 +57,7 @@ export class AddBookingModalPage implements OnInit {
   }
 
   onModalDismiss() {
-    this.modalController.dismiss();
+    this.modalController.dismiss(this.selectedPhysio);
   }
 
   ngOnInit() {
