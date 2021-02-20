@@ -18,6 +18,7 @@ export class HomePage {
   physio: Physio[];
   selectedPhysio: Physio;
   appointments: Appointment[] = [];
+  filterString: string;
 
   constructor(
     public homeService: HomeService,
