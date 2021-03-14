@@ -236,6 +236,5 @@ export class HomePage {
   // Attiva/Disattiva la vista divisa per data
   toggleWeekView() {
     this.weekView = !this.weekView;
-    this.roomsView = false;
   }
 }

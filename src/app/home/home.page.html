@@ -29,7 +29,7 @@
     <ion-row *ngIf="appointments.length > 0 && selectedPhysio">
       <ion-col size="4" style="padding: 0%; margin-left: 5%;">
         <ion-searchbar [(ngModel)]="filterString" animated placeholder="Cerca Paziente o Data"
-          style="--border-radius: 10px; padding: 0%;" *ngIf="!roomsView">
+          style="--border-radius: 10px; padding: 0%;">
         </ion-searchbar>
       </ion-col>
       <ion-col style="padding: 0%; text-align: end; margin-right: 5%;">
