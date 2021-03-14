@@ -6,6 +6,7 @@ import { HomePage } from './home.page';
 import { CalendarModule } from 'ion2-calendar';
 import { HomePageRoutingModule } from './home-routing.module';
 import { PhysioFilterPipe } from '../physio-filter.pipe';
+import { DayFilterPipe } from './day-filter.pipe';
 
 
 @NgModule({
@@ -16,7 +17,7 @@ import { PhysioFilterPipe } from '../physio-filter.pipe';
     HomePageRoutingModule,
     CalendarModule
   ],
-  declarations: [HomePage, PhysioFilterPipe],
+  declarations: [HomePage, PhysioFilterPipe, DayFilterPipe],
   providers: [{ provide: LOCALE_ID, useValue: 'it-IT' }]
 })
 export class HomePageModule { }

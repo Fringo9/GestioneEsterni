@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { dayRoomOrdered, HomeService } from '../home.service';
+import { HomePage } from '../home/home.page';
 
 @Component({
   selector: 'app-appointments',
@@ -8,12 +9,12 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AppointmentsPage implements OnInit {
 
-  constructor(private route: ActivatedRoute) { }
+  dayRoomOrdered: dayRoomOrdered[] = [];
+
+  constructor(public homeService: HomeService, public home: HomePage) { }
 
   ngOnInit() {
-    this.route.queryParams.subscribe((prop) => {
-      console.log(prop)
-    });
+    this.dayRoomOrdered = this.homeService.getDayRoomOrdered();
   }
 
 }

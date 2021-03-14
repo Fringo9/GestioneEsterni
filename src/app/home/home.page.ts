@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
-import { Appointment, HomeService, Physio, Room } from '../home.service';
+import { Appointment, dayRoomOrdered, HomeService, Physio, Room } from '../home.service';
 import * as moment from 'moment'
 import { AddBookingModalPage } from '../add-booking-modal/add-booking-modal.page';
 import { format } from 'date-fns'
@@ -19,6 +19,9 @@ export class HomePage {
   selectedPhysio: Physio;
   appointments: Appointment[] = [];
   filterString: string;
+  physioRooms = [];
+  dayRoomOrdered: dayRoomOrdered[] = [];
+  weekView: boolean = false;
 
   constructor(
     public homeService: HomeService,
@@ -57,6 +60,7 @@ export class HomePage {
     return await modal.present();
   }
 
+  // Alert di aggiunta Fisio
   async presentAlertAddPhysio() {
     const alert = await this.alertController.create({
       cssClass: 'custom-alert',
@@ -95,14 +99,17 @@ export class HomePage {
     toast.present();
   }
 
-  // Opzioni del Popover
+  // Opzioni del Popover del select del Fisio
   customPopoverOptions: any = {
     cssClass: 'custom-popover'
   };
 
   ngOnInit() {
+    // Scarico appuntamenti
     this.getAppointmentsData();
-    this.rooms = this.homeService.getRooms(); // Popolo lista delle stanze
+
+    // Popolo lista delle stanze
+    this.rooms = this.homeService.getRooms();
   }
 
   // Ottengo fisio e appuntamenti futuri ordinandoli
@@ -130,9 +137,16 @@ export class HomePage {
           }
         }
 
+        // Ordino gli appuntamenti
         this.appointments.sort((a, b) => new Date(a.day + ' ' + a.startTime).getTime() - new Date(b.day + ' ' + b.startTime).getTime());
+
+        // Popolo array physioRooms con tutti gli appuntamenti divisi per data
+        this.physioRooms = this.homeService.getPhysioDate(this.appointments);
+
+        // Popolo array dayRoomOrdered con tutti gli appuntamenti divisi per data e lettino
+        this.getDayRoomOrdered(this.appointments);
+
         this.spinner.dismiss();
-        console.log(this.appointments);
       })
     })
   }
@@ -166,18 +180,62 @@ export class HomePage {
     }
   }
 
-  // Converto la data in nome del giorno oppure giorno/mese
-  getDayRightFormat(day: string, hour: string, type?: string) {
-    if (type === 'weekDay') {
-      return (format(new Date(day + ' ' + hour), 'EEEE', { locale: it }));
-    } else {
-      return (format(new Date(day + ' ' + hour), 'd MMMM', { locale: it }));
+  // Popolo array dayRoomOrdered con tutti gli appuntamenti divisi per data e lettino
+  async getDayRoomOrdered(appointments: Appointment[]) {
+    this.dayRoomOrdered = [];
+
+    for (let i = 0; i < appointments.length; i++) {
+      // Creo la struttura dell'appuntamento
+      const appointmentToAdd: dayRoomOrdered = {
+        date: this.homeService.getDayRightFormat(appointments[i].day, appointments[i].startTime),
+        rooms: [{
+          roomId: appointments[i].roomId,
+          roomName: this.getRoomFromId(appointments[i].roomId),
+          appointments: [{
+            appointmentId: appointments[i].appointmentId,
+            patientName: appointments[i].patientName,
+            physioName: appointments[i].physioName,
+            startTime: appointments[i].startTime,
+            endTime: appointments[i].endTime,
+            day: appointments[i].day
+          }]
+        }]
+      }
+
+      if (this.dayRoomOrdered.length === 0) {
+        // Aggiungo l'appuntamento all'array
+        this.dayRoomOrdered.push(appointmentToAdd);
+
+      } else if (this.dayRoomOrdered.find(x => x.date === this.homeService.getDayRightFormat(appointments[i].day, appointments[i].startTime))) {
+
+        // Trovo l'indice dell'appuntamento con questa data
+        const sameDate = this.dayRoomOrdered.findIndex(x => x.date === this.homeService.getDayRightFormat(appointments[i].day, appointments[i].startTime));
+
+        if (this.dayRoomOrdered[sameDate].rooms.find(x => x.roomId === appointments[i].roomId)) {
+
+          // Trovo l'indice dell'appuntamento con questa stanza
+          const sameRoom = this.dayRoomOrdered[sameDate].rooms.findIndex(x => x.roomId === appointments[i].roomId);
+
+          // Aggiungo l'appuntamento all'array
+          this.dayRoomOrdered[sameDate].rooms[sameRoom].appointments.push(appointmentToAdd.rooms[0].appointments[0])
+        } else {
+          // Aggiungo l'appuntamento all'array
+          this.dayRoomOrdered[sameDate].rooms.push(appointmentToAdd.rooms[0])
+        }
+      } else {
+
+        // Aggiungo l'appuntamento all'array
+        this.dayRoomOrdered.push(appointmentToAdd);
+      }
     }
+
+    // Salvo dayRoomOrdered in localstorage
+    this.homeService.setDayRoomOrdered(this.dayRoomOrdered);
   }
 
-  // Converto l'ora in ora/minuti
-  getHourRightFormat(day: string, hour: string) {
-    return (format(new Date(day + ' ' + hour), 'k:mm'));
+  // Attiva/Disattiva la vista divisa per data
+  toggleWeekView() {
+    this.weekView = !this.weekView;
+    this.roomsView = false;
   }
-
 }

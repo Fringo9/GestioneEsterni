@@ -1,0 +1,59 @@
+ion-content{
+    --background: linear-gradient(360deg, hsla(213, 64%, 59%, 1) 27%, hsl(203, 69%, 59%) 95%);
+  }
+  
+  ion-col {
+    text-align: center;
+    height: 100%;
+    display: block;
+    vertical-align: middle;
+  }
+
+  .card-rooms {
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 0%;
+    border-radius: 10px;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  
+  .dayCard {
+    background-color: #f6f5f5; 
+    border-radius: 10px;
+    margin: 0%;
+  }
+  
+  .dayName {
+    font-weight: bold; 
+    font-size: 20px;
+    color: black;
+    margin: 0%;
+  }
+  
+  p::first-letter {
+    text-transform: uppercase
+  }
+  
+  .col-room-view {
+    padding: 0%; 
+    height: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .row-room-view {
+    align-items: center; 
+    background-color: white; 
+    border-radius: 10px 0px 0px 10px;
+    border: 2px solid white;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    box-shadow: rgb(0 0 0 / 20%) 0px 3px 3px -3px;
+    &:hover {
+        border-top: 2px solid hsl(203, 69%, 59%);
+        border-bottom: 2px solid hsl(203, 69%, 59%);
+        border-left: 2px solid hsl(203, 69%, 59%);
+    }
+  }

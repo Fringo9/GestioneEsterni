@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { AppointmentsPageRoutingModule } from './appointments-routing.module';
 
 import { AppointmentsPage } from './appointments.page';
+import { HomePage } from '../home/home.page';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { AppointmentsPage } from './appointments.page';
     IonicModule,
     AppointmentsPageRoutingModule
   ],
-  declarations: [AppointmentsPage]
+  declarations: [AppointmentsPage],
+  providers: [HomePage]
 })
-export class AppointmentsPageModule {}
+export class AppointmentsPageModule { }

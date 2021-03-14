@@ -10,26 +10,32 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
+  navigate: any;
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar
   ) {
+    this.sideMenu();
     this.initializeApp();
   }
 
-  menuItems = [
-    {
-      title: "Aggiungi Prenotazione",
-      url: "home",
-      icon: "add-circle-outline"
-    },
-    {
-      title: "Le mie Prenotazioni",
-      url: "appointments",
-      icon: "calendar-outline"
-    }
-  ];
+  sideMenu() {
+    this.navigate =
+      [
+        {
+          title: "Le mie prenotazioni",
+          url: "home",
+          icon: "add-circle-outline"
+        },
+        {
+          title: "Occupazione lettini",
+          url: "appointments",
+          icon: "calendar-outline"
+        }
+      ]
+  }
 
   initializeApp() {
     this.platform.ready().then(() => {

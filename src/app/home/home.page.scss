@@ -27,7 +27,7 @@
 }
 
 ion-content{
-  --background: linear-gradient(360deg, hsla(213, 64%, 59%, 1) 27%, hsla(203, 69%, 59%, 1) 95%);
+  --background: linear-gradient(360deg, hsla(213, 64%, 59%, 1) 27%, hsl(203, 69%, 59%) 95%);
 }
 
 ion-toggle {
@@ -48,6 +48,12 @@ ion-fab-button {
   --color: black;
 }
 
+.button-week-view {
+  --border-radius: 10%;
+  --background: #f6f5f5; 
+  height: 35px;
+}
+
 .hr {
   border-top: 3px solid #f6f5f5;
   width: 100%;
@@ -55,6 +61,21 @@ ion-fab-button {
 
 .card {
   margin-left: 5%;
+  margin-right: 5%;
+  border-radius: 10px;
+}
+
+.card-left {
+  margin-left: 5%;
+  margin-right: 5%;
+  border-radius: 10px;
+}
+
+.card-center {
+  border-radius: 10px;
+}
+
+.card-right {
   margin-right: 5%;
   border-radius: 10px;
 }
@@ -77,4 +98,17 @@ ion-fab-button {
 
 .chip-select {
   font-size: 20px;
+}
+
+// Stili della vista appuntamenti giornalieri
+
+.dayName {
+  font-weight: bold; 
+  font-size: 20px;
+  color: black;
+  margin: 0%;
+}
+
+p::first-letter {
+  text-transform: uppercase
 }

@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CostantsService } from './costants.service';
+import { StorageService } from './storage.service';
+import { format } from 'date-fns'
+import { it } from 'date-fns/locale'
 
 @Injectable({
   providedIn: 'root'
@@ -361,13 +364,20 @@ export class HomeService {
     },
     {
       roomId: 4,
-      roomName: 'Palestra'
+      roomName: 'Lettino Aperto 2'
     },
+    {
+      roomId: 5,
+      roomName: 'Palestra'
+    }
   ]
+
+  _dayRoomOrdered: dayRoomOrdered[];
 
   constructor(
     private http: HttpClient,
-    private costantsService: CostantsService) { }
+    private costantsService: CostantsService,
+    private storage: StorageService) { }
 
   getHourRange() {
     return this.bookingHours;
@@ -377,6 +387,7 @@ export class HomeService {
     return this.rooms;
   }
 
+  // Ottengo lista Fisio
   async getPhysio(): Promise<Physio[]> {
     console.log('Carico Fisio')
     return new Promise((resolve, reject) =>
@@ -410,6 +421,7 @@ export class HomeService {
       .toPromise()
   }
 
+  // Ottengo lista appuntamenti
   async getAppointments(): Promise<Appointment[]> {
     console.log('Carico appuntamenti')
     return new Promise((resolve, reject) =>
@@ -426,6 +438,7 @@ export class HomeService {
     );
   }
 
+  // Cancello appuntamento
   async removeAppointment(appointmentId: number): Promise<object> {
     return this.http.post(this.costantsService.getApiRoute('removeAppointment'), { appointmentId })
       .toPromise()
@@ -438,6 +451,82 @@ export class HomeService {
       .toPromise()
   }
 
+  // Divide gli appuntamenti per data
+  getPhysioDate(appointments: Appointment[]) {
+    const filteredAppointments = [];
+    let sameDateFound: boolean = false;
+
+    for (let i = 0; i < appointments.length; i++) {
+      sameDateFound = false;
+      appointments[i].stringDate = this.getDayRightFormat(appointments[i].day, appointments[i].startTime);
+
+      if (filteredAppointments.length === 0) {
+        sameDateFound = true;
+        const appToAdd = [{
+          patientName: appointments[i].patientName,
+          physioName: appointments[i].physioName,
+          roomId: appointments[i].roomId,
+          day: appointments[i].day,
+          startTime: appointments[i].startTime,
+          endTime: appointments[i].endTime,
+          stringDate: appointments[i].stringDate
+        }]
+
+        filteredAppointments.push(appToAdd);
+      } else {
+        for (let k = 0; k < filteredAppointments.length; k++) {
+          if (filteredAppointments[k].find(x => x.stringDate === appointments[i].stringDate)) {
+            sameDateFound = true;
+            const appSameDate = {
+              patientName: appointments[i].patientName,
+              physioName: appointments[i].physioName,
+              roomId: appointments[i].roomId,
+              day: appointments[i].day,
+              startTime: appointments[i].startTime,
+              endTime: appointments[i].endTime,
+              stringDate: appointments[i].stringDate
+            }
+            filteredAppointments[k].push(appSameDate);
+          }
+        }
+      }
+
+      if (sameDateFound === false) {
+        const appToAdd = [{
+          patientName: appointments[i].patientName,
+          physioName: appointments[i].physioName,
+          roomId: appointments[i].roomId,
+          day: appointments[i].day,
+          startTime: appointments[i].startTime,
+          endTime: appointments[i].endTime,
+          stringDate: appointments[i].stringDate
+        }]
+
+        filteredAppointments.push(appToAdd);
+      }
+    }
+
+    return filteredAppointments;
+  }
+
+  // Cacha l'array degli appuntamenti ordinati per data e lettino
+  async setDayRoomOrdered(dayRoomOrdered) {
+    await this.storage.setItem('dayRoomOrdered', JSON.stringify(dayRoomOrdered));
+    this.readDayRoomOrdered();
+  }
+
+  // Legge l'array degli appuntamenti ordinati per data e lettino
+  private async readDayRoomOrdered() {
+    this.storage.getItem('dayRoomOrdered').then((val) => {
+      this._dayRoomOrdered = JSON.parse(val);
+    });
+  }
+
+  // Restituisce dayRoomOrdered
+  getDayRoomOrdered() {
+    return this._dayRoomOrdered;
+  }
+
   // Rendo la data nel formato mese/giorno/anno
   makeDateRightFormat(date: string) {
     const stringSplitted = date.split('-');
@@ -448,6 +537,20 @@ export class HomeService {
     }
     const year = stringSplitted[2];
     return month + '/' + day + '/' + year;
+  }
+
+  // Converto la data in nome del giorno oppure giorno/mese
+  getDayRightFormat(day: string, hour: string, type?: string) {
+    if (type === 'weekDay') {
+      return (format(new Date(day + ' ' + hour), 'EEEE', { locale: it }));
+    } else {
+      return (format(new Date(day + ' ' + hour), 'd MMMM', { locale: it }));
+    }
+  }
+
+  // Converto l'ora in ora/minuti
+  getHourRightFormat(day: string, hour: string) {
+    return (format(new Date(day + ' ' + hour), 'k:mm'));
   }
 
 }
@@ -466,16 +569,30 @@ export interface Appointment {
   appointmentId: number;
   patientName: string;
   physioName: string;
-  roomId: number;
-  day: string;
+  roomId?: number;
+  day?: string;
   startTime: string;
   endTime: string;
+  stringDate?: string;
 }
 
 // Rappresenta una stanza
 export interface Room {
   roomId: number;
   roomName: string;
+}
+
+// Rappresenta oggetto ordinato per data e stanze
+export interface dayRoomOrdered {
+  date: string;
+  rooms: roomAppointments[];
+}
+
+// Rappresenta una stanza con i suoi appuntamenti
+export interface roomAppointments {
+  roomId: number;
+  roomName: string;
+  appointments: Appointment[]
 }
 
 // Rappresenta un Fisio

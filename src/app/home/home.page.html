@@ -1,5 +1,10 @@
 <ion-content>
-  <ion-grid style="padding: 0%;">
+  <ion-grid style="padding: 0%; padding-top: 0.3%;">
+    <ion-row>
+      <ion-col size="0.5" style="padding: 0%;">
+        <ion-menu-button style="--border-radius: 10px"></ion-menu-button>
+      </ion-col>
+    </ion-row>
     <ion-row>
       <ion-col class="ion-text-center" style="padding: 0%;">
         <ion-chip *ngIf="physio" class="chip-custom">
@@ -20,63 +25,211 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-grid style="padding: 0%;">
+  <ion-grid style="padding: 0%; margin-top: 2%;">
     <ion-row *ngIf="appointments.length > 0 && selectedPhysio">
       <ion-col size="4" style="padding: 0%; margin-left: 5%;">
         <ion-searchbar [(ngModel)]="filterString" animated placeholder="Cerca Paziente o Data"
-          style="--border-radius: 10px; padding: 0%;">
+          style="--border-radius: 10px; padding: 0%;" *ngIf="!roomsView">
         </ion-searchbar>
       </ion-col>
+      <ion-col style="padding: 0%; text-align: end; margin-right: 5%;">
+        <ion-button size="small" class="button-week-view" (click)="toggleWeekView()">
+          <ion-icon slot="icon-only" name="calendar-outline" style="color: black;"></ion-icon>
+        </ion-button>
+      </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col style=" padding: 0%;">
-        <ion-card class="card" *ngIf="appointments.length > 0 && selectedPhysio">
-          <ion-grid style="padding: 0%;">
-            <ion-row style="background-color: #f6f5f5; padding-bottom: 1%; margin-bottom: 1%;">
-              <ion-col style="padding-top: 1.5%;" size="3">
-                Data
-              </ion-col>
-              <ion-col style="padding-top: 1.5%;" size="3">
-                Ora
-              </ion-col>
-              <ion-col style="padding-top: 1.5%;" size="3">
-                Lettino
-              </ion-col>
-              <ion-col style="padding-top: 1.5%;" size="2">
-                Nome del paziente
-              </ion-col>
-              <ion-col style="padding-top: 1.5%;" size="1">
-              </ion-col>
-            </ion-row>
-            <ion-row *ngFor="let appointment of appointments | physioFilter: selectedPhysio:filterString"
-              style="align-items: center;">
-              <ion-col size="3">
-                <ion-label>{{getDayRightFormat(appointment.day, appointment.startTime, 'weekDay')}}
-                  <br>
-                  {{getDayRightFormat(appointment.day, appointment.startTime)}}
-                </ion-label>
-              </ion-col>
-              <ion-col size="3">
-                <ion-label>{{getHourRightFormat(appointment.day, appointment.startTime)}}
-                  <br>
-                  {{getHourRightFormat(appointment.day, appointment.endTime)}}
-                </ion-label>
-              </ion-col>
-              <ion-col size="3">
-                <ion-label>{{getRoomFromId(appointment.roomId)}}</ion-label>
-              </ion-col>
-              <ion-col size="2">
-                <ion-label>{{appointment.patientName}}</ion-label>
-              </ion-col>
-              <ion-col size="1">
-                <ion-button fill="clear" color="danger" (click)="removeAppointment(appointment.appointmentId)">
-                  <ion-icon name="trash-outline"></ion-icon>
-                </ion-button>
-              </ion-col>
-              <hr class="hr">
-            </ion-row>
-          </ion-grid>
-        </ion-card>
+    <ion-row *ngIf="!weekView && appointments.length > 0 && selectedPhysio">
+      <ion-col style=" padding: 0%;"
+        *ngFor="let item of appointments | physioFilter: selectedPhysio:filterString:'home' | slice:0:1">
+        <div *ngIf="item.day !== null">
+          <ion-card class="card">
+            <ion-grid style="padding: 0%;">
+              <ion-row style="background-color: #f6f5f5; padding-bottom: 1%; margin-bottom: 1%;">
+                <ion-col style="padding-top: 1.5%;" size="3">
+                  Data
+                </ion-col>
+                <ion-col style="padding-top: 1.5%;" size="3">
+                  Ora
+                </ion-col>
+                <ion-col style="padding-top: 1.5%;" size="3">
+                  Lettino
+                </ion-col>
+                <ion-col style="padding-top: 1.5%;" size="2">
+                  Nome del paziente
+                </ion-col>
+                <ion-col style="padding-top: 1.5%;" size="1">
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let appointment of appointments | physioFilter: selectedPhysio:filterString:'home'"
+                style="align-items: center;">
+                <ion-col size="3">
+                  <ion-label>{{homeService.getDayRightFormat(appointment.day, appointment.startTime, 'weekDay')}}
+                    <br>
+                    {{homeService.getDayRightFormat(appointment.day, appointment.startTime)}}
+                  </ion-label>
+                </ion-col>
+                <ion-col size="3">
+                  <ion-label>{{homeService.getHourRightFormat(appointment.day, appointment.startTime)}}
+                    <br>
+                    {{homeService.getHourRightFormat(appointment.day, appointment.endTime)}}
+                  </ion-label>
+                </ion-col>
+                <ion-col size="3">
+                  <ion-label>{{getRoomFromId(appointment.roomId)}}</ion-label>
+                </ion-col>
+                <ion-col size="2">
+                  <ion-label>{{appointment.patientName}}</ion-label>
+                </ion-col>
+                <ion-col size="1">
+                  <ion-button fill="clear" color="danger" (click)="removeAppointment(appointment.appointmentId)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </ion-button>
+                </ion-col>
+                <hr class="hr">
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </div>
+        <div *ngIf="item.day === null">
+          <p class="dayName" style="margin-top: 4%; margin-bottom: 2%;">Nessun appuntamento presente</p>
+        </div>
+      </ion-col>
+    </ion-row>
+    <!-- <ion-row *ngIf="weekView && appointments.length > 0 && selectedPhysio"
+      style="margin-left: 3.5%; margin-right: 2.5%;">
+      <div *ngFor="let appointment of appointments | physioFilter: selectedPhysio:filterString | dayFilter"
+        style="width: 33%;">
+        <ion-col style="padding: 0%;" *ngIf="appointment[0].day !== null">
+          <ion-card class="card">
+            <ion-grid style="padding: 0%;">
+              <ion-row style="background-color: #f6f5f5; padding-bottom: 1%; margin-bottom: 1%;">
+                <ion-col style="padding-top: 1.5%;">
+                  <ion-label>{{homeService.getDayRightFormat(appointment[0].day, appointment[0].startTime, 'weekDay')}}
+                    <br>
+                    {{homeService.getDayRightFormat(appointment[0].day, appointment[0].startTime)}}
+                  </ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let patient of appointment" style="align-items: center;">
+                <ion-col>
+                  <ion-label>{{patient.patientName}}</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label>{{homeService.getHourRightFormat(patient.day, patient.startTime)}}
+                    <br>
+                    {{homeService.getHourRightFormat(patient.day, patient.endTime)}}
+                  </ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label>{{getRoomFromId(patient.roomId)}}</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-button fill="clear" color="danger" (click)="removeAppointment(appointment.appointmentId)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </ion-button>
+                </ion-col>
+                <hr class="hr">
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+      </div>
+      <div *ngFor="let appointment of appointments | physioFilter: selectedPhysio:filterString | dayFilter">
+        <ion-col style="padding: 0%; text-align: center;" *ngIf="appointment[0].day === null">
+          <p>Nessun appuntamento presente</p>
+        </ion-col>
+      </div>
+    </ion-row> -->
+    <!-- <ion-row *ngIf="weekView && appointments.length > 0 && selectedPhysio"
+      style="margin-left: 3.5%; margin-right: 3.5%;">
+      <div *ngIf="physioRooms.length > 0" style="width: 100%; display: contents;">
+        <ion-col *ngFor="let appointment of physioRooms | physioFilter: selectedPhysio:filterString:'physioDay'"
+          style="padding: 0%;" size="4">
+          <ion-card class="card">
+            <ion-grid style="padding: 0%;">
+              <ion-row style="background-color: #f6f5f5; padding-bottom: 1%; margin-bottom: 1%;">
+                <ion-col style="padding-top: 1.5%;">
+                  <ion-label>{{homeService.getDayRightFormat(appointment[0].day, appointment[0].startTime, 'weekDay')}}
+                    <br>
+                    {{homeService.getDayRightFormat(appointment[0].day, appointment[0].startTime)}}
+                  </ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let patient of appointment" style="align-items: center;">
+                <ion-col>
+                  <ion-label>{{patient.patientName}}</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label>{{homeService.getHourRightFormat(patient.day, patient.startTime)}}
+                    <br>
+                    {{homeService.getHourRightFormat(patient.day, patient.endTime)}}
+                  </ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label>{{getRoomFromId(patient.roomId)}}</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-button fill="clear" color="danger" (click)="removeAppointment(appointment.appointmentId)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </ion-button>
+                </ion-col>
+                <hr class="hr">
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+      </div>
+      <ion-col *ngIf="physioRooms.length === 0" style="padding: 0%; text-align: center;">
+        <h2>Nessun appuntamento presente</h2>
+      </ion-col>
+    </ion-row> -->
+    <ion-row *ngIf="weekView && physioRooms.length > 0">
+      <ion-col style="padding: 0%; margin-top: 2%;" size="12"
+        *ngFor="let day of physioRooms | physioFilter: selectedPhysio:filterString:'physioDay'">
+        <div *ngIf="day[0].day !== null">
+          <p class="dayName">{{homeService.getDayRightFormat(day[0].day, day[0].startTime, 'weekDay')}}
+            {{homeService.getDayRightFormat(day[0].day, day[0].startTime)}}</p>
+          <ion-card class="card">
+            <ion-grid style="padding: 0%;">
+              <ion-row style="background-color: #f6f5f5; padding-bottom: 1%; margin-bottom: 1%;">
+                <ion-col style="padding-top: 1.5%;" size="4">
+                  Nome del paziente
+                </ion-col>
+                <ion-col style="padding-top: 1.5%;" size="3">
+                  Ora
+                </ion-col>
+                <ion-col style="padding-top: 1.5%;" size="4">
+                  Lettino
+                </ion-col>
+                <ion-col style="padding-top: 1.5%;" size="1">
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let patient of day" style="align-items: center;">
+                <ion-col size="4">
+                  <ion-label>{{patient.patientName}}</ion-label>
+                </ion-col>
+                <ion-col size="3">
+                  <ion-label>{{homeService.getHourRightFormat(patient.day, patient.startTime)}}
+                    <br>
+                    {{homeService.getHourRightFormat(patient.day, patient.endTime)}}
+                  </ion-label>
+                </ion-col>
+                <ion-col size="4">
+                  <ion-label>{{getRoomFromId(patient.roomId)}}</ion-label>
+                </ion-col>
+                <ion-col size="1">
+                  <ion-button fill="clear" color="danger" (click)="removeAppointment(patient.appointmentId)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </ion-button>
+                </ion-col>
+                <hr class="hr">
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </div>
+        <div *ngIf="day[0].day === null">
+          <p class="dayName" style="margin-top: 2%; margin-bottom: 2%;">Nessun appuntamento presente</p>
+        </div>
       </ion-col>
     </ion-row>
   </ion-grid>
