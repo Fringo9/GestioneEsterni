@@ -14,7 +14,10 @@ export class AppointmentsPage implements OnInit {
   constructor(public homeService: HomeService, public home: HomePage) { }
 
   ngOnInit() {
-    this.dayRoomOrdered = this.homeService.getDayRoomOrdered();
+    this.homeService.readDayRoomOrdered().then(() => {
+      this.dayRoomOrdered = this.homeService.getDayRoomOrdered();
+      console.log('Appuntamenti ordinati per stanza e data');
+      console.log(this.dayRoomOrdered);
+    })
   }
-
 }

@@ -516,10 +516,13 @@ export class HomeService {
   }
 
   // Legge l'array degli appuntamenti ordinati per data e lettino
-  private async readDayRoomOrdered() {
-    this.storage.getItem('dayRoomOrdered').then((val) => {
-      this._dayRoomOrdered = JSON.parse(val);
-    });
+  readDayRoomOrdered(): Promise<void> {
+    return new Promise(async (resolve) => {
+      await this.storage.getItem('dayRoomOrdered').then((val) => {
+        this._dayRoomOrdered = JSON.parse(val);
+        resolve();
+      });
+    })
   }
 
   // Restituisce dayRoomOrdered

@@ -139,6 +139,7 @@ export class HomePage {
 
         // Ordino gli appuntamenti
         this.appointments.sort((a, b) => new Date(a.day + ' ' + a.startTime).getTime() - new Date(b.day + ' ' + b.startTime).getTime());
+        console.log(this.appointments);
 
         // Popolo array physioRooms con tutti gli appuntamenti divisi per data
         this.physioRooms = this.homeService.getPhysioDate(this.appointments);
