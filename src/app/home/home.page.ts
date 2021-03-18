@@ -154,6 +154,7 @@ export class HomePage {
 
   // Eliminazione appuntamento
   removeAppointment(appointmentId: number) {
+    console.log('appo ID' + appointmentId);
     this.homeService.removeAppointment(appointmentId).then(() => {
       this.getAppointmentsData();
       this.presentToast('Appuntamento cancellato');

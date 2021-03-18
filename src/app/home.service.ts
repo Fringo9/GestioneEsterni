@@ -463,6 +463,7 @@ export class HomeService {
       if (filteredAppointments.length === 0) {
         sameDateFound = true;
         const appToAdd = [{
+          appointmentId: appointments[i].appointmentId,
           patientName: appointments[i].patientName,
           physioName: appointments[i].physioName,
           roomId: appointments[i].roomId,
@@ -478,6 +479,7 @@ export class HomeService {
           if (filteredAppointments[k].find(x => x.stringDate === appointments[i].stringDate)) {
             sameDateFound = true;
             const appSameDate = {
+              appointmentId: appointments[i].appointmentId,
               patientName: appointments[i].patientName,
               physioName: appointments[i].physioName,
               roomId: appointments[i].roomId,
@@ -493,6 +495,7 @@ export class HomeService {
 
       if (sameDateFound === false) {
         const appToAdd = [{
+          appointmentId: appointments[i].appointmentId,
           patientName: appointments[i].patientName,
           physioName: appointments[i].physioName,
           roomId: appointments[i].roomId,
