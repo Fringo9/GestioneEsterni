@@ -127,11 +127,11 @@ export class HomePage {
       // Ottengo gli appuntamenti
       this.homeService.getAppointments().then(res => {
         this.appointments = [];
-        const now = format(new Date(), 'M/dd/y HH:mm', { locale: it });
+        const now = format(new Date(), 'MM/dd/y HH:mm', { locale: it });
 
         // Tengo solo gli appuntamenti nel futuro (considerando al minuto)
         for (let i = 0; i < res.length; i++) {
-          const dateFormatted = format(new Date(res[i].day + ' ' + res[i].startTime), 'M/dd/y HH:mm', { locale: it });
+          const dateFormatted = format(new Date(res[i].day + ' ' + res[i].startTime), 'MM/dd/y HH:mm', { locale: it });
           if (dateFormatted > now) {
             this.appointments.push(res[i]);
           }
@@ -154,7 +154,6 @@ export class HomePage {
 
   // Eliminazione appuntamento
   removeAppointment(appointmentId: number) {
-    console.log('appo ID' + appointmentId);
     this.homeService.removeAppointment(appointmentId).then(() => {
       this.getAppointmentsData();
       this.presentToast('Appuntamento cancellato');

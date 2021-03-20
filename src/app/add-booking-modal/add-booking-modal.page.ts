@@ -3,6 +3,8 @@ import { CalendarComponentOptions } from 'ion2-calendar';
 import { Appointment, HomeService, HourRange, Physio, Room } from '../home.service';
 import * as moment from 'moment';
 import { ModalController, ToastController } from '@ionic/angular';
+import { format } from 'date-fns';
+import { zonedTimeToUtc, getTimezoneOffset } from 'date-fns-tz';
 
 @Component({
   selector: 'app-add-booking-modal',
@@ -101,6 +103,7 @@ export class AddBookingModalPage implements OnInit {
     if (this.selectedPhysio && this.patientName && this.selectedHour) {
       const startDates = [];
       const endDates = [];
+
       for (let i = 0; i < this.date.length; i++) {
         startDates.push(this.makeGmtDate(new Date(this.date[i]), this.selectedHour.startTime));
         endDates.push(this.makeGmtDate(new Date(this.date[i]), this.selectedHour.endTime));
@@ -134,9 +137,20 @@ export class AddBookingModalPage implements OnInit {
 
   // Rendo la data in formato GMT per il db
   makeGmtDate(date: Date, time: string) {
-    const gmtDate = new Date(new Date(date).toLocaleDateString('en-US') + ' ' + time);
-    gmtDate.setTime(gmtDate.getTime() + 60 * 60 * 1000);
-    return gmtDate
+    // Converto la data in formato UTC
+    const utcDate = new Date(zonedTimeToUtc((format(date, 'u-LL-dd') + ' ' + time), 'Europe/Berlin'));
+
+    // Calcolo offset rispetto a UTC per capire se siamo in ora solare o legale
+    const timeOffset = getTimezoneOffset('Europe/Berlin', new Date(utcDate));
+
+    // Aggiungo alla data l'offset in base se siamo in ora legale o solare
+    if (timeOffset === 3600000) {
+      utcDate.setTime(utcDate.getTime() + 3600000);
+    } else {
+      utcDate.setTime(utcDate.getTime() + 7200000);
+    }
+
+    return utcDate
   }
 
   // Scatta alla selezione di una data

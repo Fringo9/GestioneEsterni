@@ -416,7 +416,6 @@ export class HomeService {
 
   // Registra nuovo appuntamento a DB
   async addBooking(bookingBody): Promise<object> {
-    console.log(bookingBody);
     return this.http.post(this.costantsService.getApiRoute('addBooking'), bookingBody)
       .toPromise()
   }

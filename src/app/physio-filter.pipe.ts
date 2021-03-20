@@ -92,7 +92,6 @@ export class PhysioFilterPipe implements PipeTransform {
 
         // Se il fisio selezionato non ha appuntamenti, ritorno quello fake
         if (filteredAppointmentsPerPhysio.length > 0) {
-          console.log(filteredAppointmentsPerPhysio)
           return filteredAppointmentsPerPhysio;
         } else {
           return this.fakeArray;
