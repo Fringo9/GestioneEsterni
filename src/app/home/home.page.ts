@@ -3,8 +3,6 @@ import { AlertController, ModalController, ToastController } from '@ionic/angula
 import { Appointment, dayRoomOrdered, HomeService, Physio, Room } from '../home.service';
 import * as moment from 'moment'
 import { AddBookingModalPage } from '../add-booking-modal/add-booking-modal.page';
-import { format } from 'date-fns'
-import { it } from 'date-fns/locale'
 import { SpinnerService } from '../spinner.service';
 
 @Component({
@@ -126,7 +124,10 @@ export class HomePage {
 
       // Ottengo gli appuntamenti
       this.homeService.getAppointments().then(res => {
-        this.appointments = [];
+        this.appointments = res;
+
+        /* Lascio la funzione per filtrare solo quelli del futuro, nel caso ci fosse qualche bug (adesso il filtro è lato server)
+
         const now = format(new Date(), 'MM/dd/y HH:mm', { locale: it });
 
         // Tengo solo gli appuntamenti nel futuro (considerando al minuto)
@@ -135,7 +136,9 @@ export class HomePage {
           if (dateFormatted > now) {
             this.appointments.push(res[i]);
           }
-        }
+        } 
+        
+        */
 
         // Ordino gli appuntamenti
         this.appointments.sort((a, b) => new Date(a.day + ' ' + a.startTime).getTime() - new Date(b.day + ' ' + b.startTime).getTime());
