@@ -346,6 +346,34 @@ export class HomeService {
       endTime: '18:00:00',
       isQuarter: true,
       isMorning: false
+    },
+    {
+      name: '17.30 - 18.30',
+      startTime: '17:30:00',
+      endTime: '18:30:00',
+      isQuarter: false,
+      isMorning: false
+    },
+    {
+      name: '17.30 - 18.15',
+      startTime: '17:30:00',
+      endTime: '18:15:00',
+      isQuarter: true,
+      isMorning: false
+    },
+    {
+      name: '17.45 - 18.30',
+      startTime: '17:45:00',
+      endTime: '18:30:00',
+      isQuarter: true,
+      isMorning: false
+    },
+    {
+      name: '18.00 - 18.45',
+      startTime: '18:00:00',
+      endTime: '18:45:00',
+      isQuarter: true,
+      isMorning: false
     }
   ]
 
